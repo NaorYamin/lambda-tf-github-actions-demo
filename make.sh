@@ -8,7 +8,7 @@
 AWS_PROFILE=default
 AWS_REGION=eu-west-1
 # project name
-PROJECT_NAME=adoptme-lambda-api
+PROJECT_NAME=lambda-api-demo-project
 
 
 # the directory containing the script file

@@ -1,12 +1,13 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export const generateNewAccessToken = (email) =>
-  generateNewToken(email, process.env.ACCESS_TOKEN_SECRET_KEY, '2h');
+  generateNewToken(email, process.env.ACCESS_TOKEN_SECRET_KEY, "2h");
 
 export const generateNewRefreshToken = (email) =>
-  generateNewToken(email, process.env.REFRESH_TOKEN_SECRET_KEY, '365d');
+  generateNewToken(email, process.env.REFRESH_TOKEN_SECRET_KEY, "365d");
 
 const generateNewToken = (email, secretKey, expiresIn) => {
+  console.log("jwt => ", email, secretKey);
   const token = jwt.sign({ email: email }, secretKey, {
     expiresIn,
   });

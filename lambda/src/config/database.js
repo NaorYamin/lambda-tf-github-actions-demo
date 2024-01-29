@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = `mongodb+srv://adoptme:${process.env.MONGO_PASSWORD}@adoptme.9amvw1j.mongodb.net/?retryWrites=true&w=majority`;
+export const databaseInit = async () => {
+  const mongoPassword = process.env.MONGO_PASSWORD;
+  if (!mongoPassword) console.error("MongoPassword Does not exists");
+  const mongoUri = `mongodb+srv://demodb:${mongoPassword}@demodb.#####.mongodb.net/?retryWrites=true&w=majority`;
 
-const connect = async () => {
   try {
-    const client = await mongoose.connect(MONGO_URI, {
+    const client = await mongoose.connect(mongoUri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       maxIdleTimeMS: 270000,
@@ -21,5 +23,3 @@ const connect = async () => {
     process.exit(1);
   }
 };
-
-export default connect;

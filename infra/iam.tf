@@ -21,7 +21,7 @@ resource "aws_iam_role" "lambda_role" {
 resource "aws_lambda_permission" "lambda_permission" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.adoptmelambda.function_name
+  function_name = aws_lambda_function.demolambda.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource
@@ -32,7 +32,7 @@ resource "aws_lambda_permission" "lambda_permission" {
 resource "aws_lambda_permission" "permission_dev" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.adoptmelambda.function_name}:dev"
+  function_name = "${aws_lambda_function.demolambda.function_name}:dev"
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource
@@ -43,7 +43,7 @@ resource "aws_lambda_permission" "permission_dev" {
 resource "aws_lambda_permission" "permission_prod" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.adoptmelambda.function_name}:prod"
+  function_name = "${aws_lambda_function.demolambda.function_name}:prod"
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource

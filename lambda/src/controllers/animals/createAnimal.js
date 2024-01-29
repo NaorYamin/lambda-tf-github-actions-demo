@@ -3,6 +3,8 @@ import { branchFields, errorMessages } from '../../constants/index.js';
 import { animalFields } from '../../constants/index.js';
 import { getBirthdayTimestamp } from '../../utils/age.js';
 import { uploadImagesToS3 } from '../../utils/uploadImagesToS3.js';
+import { track } from '../../utils/index.js';
+import { eventProps, eventTypes } from '../../constants/index.js';
 
 const updateBranchAnimalCount = async (_id) =>
   await Branch.findOneAndUpdate(
@@ -53,7 +55,16 @@ const addAnimalToDb = async ({
 };
 
 const createAnimal = async (req, res) => {
-  const { animal, userId, branchId, shelterId } = req.body;
+  const {
+    animal,
+    userId,
+    branchId,
+    shelterId,
+    deviceType,
+    userRole,
+    startTimestamp,
+    finishTimestamp,
+  } = req.body;
   try {
     // @TODO: Send email - You've just created an animal
     const images = await uploadImagesToS3({
@@ -68,6 +79,16 @@ const createAnimal = async (req, res) => {
       shelterId: shelterId,
     });
     if (branchId) updateBranchAnimalCount(branchId);
+
+    track(eventTypes.CREATE_ANIMAL, {
+      [eventProps.USER_ID]: userId,
+      [eventProps.ANIMAL_ID]: animalDoc._id,
+      [eventProps.DEVICE_TYPE]: deviceType,
+      [eventProps.USER_ROLE]: userRole,
+      [eventProps.START]: startTimestamp,
+      [eventProps.FINISH]: finishTimestamp,
+    });
+
     return res
       .status(200)
       .json({ animal: animalDoc, userId, branchId, shelterId });

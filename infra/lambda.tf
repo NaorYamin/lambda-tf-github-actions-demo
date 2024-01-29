@@ -5,7 +5,7 @@ data "archive_file" "zip" {
   output_path = "../lambda/index.zip"
 }
 
-resource "aws_lambda_function" "demo_lambda" {
+resource "aws_lambda_function" "demolambda" {
   filename         = data.archive_file.zip.output_path
   source_code_hash = filebase64sha256(data.archive_file.zip.output_path)
 
@@ -22,17 +22,17 @@ resource "aws_lambda_function" "demo_lambda" {
 resource "aws_lambda_alias" "alias_dev" {
   name             = "dev"
   description      = "dev"
-  function_name    = aws_lambda_function.demo_lambda.arn
+  function_name    = aws_lambda_function.demolambda.arn
   function_version = "$LATEST"
 }
 
 resource "aws_lambda_alias" "alias_prod" {
   name             = "prod"
   description      = "prod"
-  function_name    = aws_lambda_function.demo_lambda.arn
+  function_name    = aws_lambda_function.demolambda.arn
   function_version = "$LATEST"
 }
 
 resource "aws_cloudwatch_log_group" "convert_log_group" {
-  name = "/aws/lambda/${aws_lambda_function.demo_lambda.function_name}"
+  name = "/aws/lambda/${aws_lambda_function.demolambda.function_name}"
 }

@@ -7,7 +7,7 @@
 # AWS variables
 AWS_REGION=eu-west-1
 # project name
-PROJECT_NAME=lambda-tf-github-actions-demo
+PROJECT_NAME=lambda-api-demo-project
 
 # the directory containing the script file
 dir="$(cd "$(dirname "$0")"; pwd)"

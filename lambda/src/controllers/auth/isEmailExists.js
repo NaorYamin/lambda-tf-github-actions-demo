@@ -1,10 +1,11 @@
 import User from '../../models/user.js';
 import { errorMessages } from '../../constants/index.js';
+import { formatEmail } from '../../utils/index.js';
 
 const isEmailExists = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: formatEmail(email) });
     if (user) {
       return res.status(200).json({
         emailExists: true,

@@ -6,9 +6,8 @@ import bcrypt from 'bcryptjs';
 const gernerateMessage = (code) => `Confirmation Code: ${code}
 Please enter this code on the confirmation page to verify your email address. If you did not request this registration, please ignore this email.`;
 
-const sendEmail = (email, code) => {
+const sendEmail = async (email, code) => {
   const transporter = createNodeMailerAwsTransporter();
-
   transporter.sendMail(
     {
       from: 'adoptmecoil@gmail.com',
@@ -16,8 +15,13 @@ const sendEmail = (email, code) => {
       subject: 'Adopt Me confirmation code',
       text: gernerateMessage(code),
     },
-    (err) => {
-      if (err) console.error(err);
+    (err, info) => {
+      if (err) {
+        console.error('sendEmailError => ', err);
+      }
+      if (info) {
+        console.log('EmailSentSuccessfully to => ', info?.envelope.to);
+      }
     },
   );
 };
@@ -50,18 +54,17 @@ export const sendEmailConfirmationCode = async (email, updateUser) => {
 export const verifyConfirmationCode = async (email, code, password) => {
   try {
     const user = await User.findOne({ email });
-    if (user && password && code === user?.emailConfirmationCode) {
-      await verifyUserInDB(user);
+
+    if (!user || code !== user?.emailConfirmationCode) return;
+
+    await verifyUserInDB(user);
+    if (password) {
       const encryptedPassword = await bcrypt.hash(password, 10);
       await user.updateOne({ [userFields.PASSWORD]: encryptedPassword });
-      return { user: user, isMatch: true };
-    } else if (user && code === user?.emailConfirmationCode) {
-      await verifyUserInDB(user);
-      return true;
-    } else return false;
-    // @TODO: Return the reason why the function failed (code or password) in else condition
+    }
+    return { user, isMatch: true };
   } catch (err) {
-    console.error(err);
+    console.error('verifyConfirmationCode => ', err);
     return;
   }
 };

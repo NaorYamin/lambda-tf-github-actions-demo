@@ -1,11 +1,12 @@
 import bcrypt from 'bcryptjs';
 import User from '../../models/user.js';
 import {
+  formatEmail,
   generateNewTokens,
   sendEmailConfirmationCode,
   userResponseFormatter,
 } from '../../utils/index.js';
-import { userFields } from '../../constants/index.js';
+import { errorMessages, userFields } from '../../constants/index.js';
 
 const register = async (req, res) => {
   try {
@@ -16,10 +17,9 @@ const register = async (req, res) => {
       password,
       age,
       location,
-      platform,
     } = req.body;
 
-    const email = reqEmail?.toLowerCase().trim();
+    const email = formatEmail(reqEmail);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const emailConfirmationCode = await sendEmailConfirmationCode(email);
     // @TODO: check if user is active or unActive
@@ -44,6 +44,7 @@ const register = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ error: errorMessages.GENERAL_SERVER_ERROR });
   }
 };
 

@@ -10,7 +10,7 @@ const passwordReset = async (req, res) => {
       code,
       password,
     );
-    if (user !== null && isMatch) {
+    if (isMatch) {
       const { accessToken, refreshToken } = generateNewTokens(email);
       return res.status(200).json({
         user: userResponseFormatter(user),
